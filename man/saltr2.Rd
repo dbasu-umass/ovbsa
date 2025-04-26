@@ -56,12 +56,12 @@ probability of conclusion being overturned using total R2-based analysis
 }
 \examples{
 
-if(require("sensemakr")){
+require("sensemakr")
 Y <- "peacefactor"
 D <- "directlyharmed"
 X <- "female"
 X_oth <- c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur")
-}
+
 
 res3 <- saltr2(alpha=0.05,data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth,N=500)
 

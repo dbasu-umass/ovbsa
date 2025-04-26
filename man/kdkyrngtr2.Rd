@@ -26,12 +26,12 @@ a data frame with 2 columns and 1 row:
 compute max(kD) and max(kY) for total R2-based analysis
 }
 \examples{
-if(require("sensemakr")){
+require("sensemakr")
 Y <- "peacefactor"
 D <- "directlyharmed"
 X <- "female"
 X_oth <- c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur")
-}
+
 
 r1 <- kdkyrngtr2(data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth)
 

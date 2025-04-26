@@ -1,4 +1,4 @@
-#' bias and std error for (kd,ky) using total R2-based analysis
+#' bias and std error for (kd,ky) using partial R2-based analysis without conditioning on treatment
 #'
 #' @param kd sensitivity parameter kD (scalar)
 #' @param ky sensitivity parameter kY (scalar)
@@ -19,7 +19,6 @@
 #' @export
 #'
 #' @examples
-#'
 #' require("sensemakr")
 #' Y <- "peacefactor"
 #' D <- "directlyharmed"
@@ -27,15 +26,16 @@
 #' X_oth <- c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur")
 #'
 #'
-#' res2 <- tr2bias(kd=1,ky=1,alpha=0.05,data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth)
+#' res4<-pr2ncdbias(kd=1,ky=1,alpha=0.05,data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth)
 #'
-tr2bias <- function(
-    kd,ky,alpha,data,outcome,
-    treatment,bnch_reg,other_reg=NULL){
+pr2ncdbias <- function(
+    kd,ky,alpha,data,outcome,treatment,
+    bnch_reg,other_reg=NULL){
 
   # ------ Create data set
   d1 <- as.data.frame(data)
 
+  # -----------------------------------------
   # ------ Estimate the restricted regression
   # Set up model
   mod1 <- stats::as.formula(
@@ -56,34 +56,59 @@ tr2bias <- function(
   dof1 <- res1$df.residual
 
 
-  # -------- Case 1: total r2-based benchmarking
+  # -------- Case 2: partial r2-based benchmarking
+  # -------- not conditioning on D (treatment)
 
-  # --- R2DXj
-  DXj <- stats::as.formula(paste(treatment, paste(bnch_reg, collapse= "+"), sep = "~"))
-  R2DXj <- summary(stats::lm(DXj, data = d1))$r.squared
-
-  # ---- R2DX
-  DX <- stats::as.formula(
+  # --- R2DXj.Xmj
+  reg1 <- stats::as.formula(
     paste(treatment, paste(c(bnch_reg, other_reg), collapse= "+"), sep = "~")
   )
-  R2DX <- summary(stats::lm(DX,data = d1))$r.squared
+  r1_d <- summary(stats::lm(reg1, data=d1))$r.squared
 
-  # ---- R2YXj
-  YXj <- stats::as.formula(paste(outcome, paste(bnch_reg, collapse= "+"), sep = "~"))
-  R2YXj <- summary(stats::lm(YXj, data = d1))$r.squared
+  if(is.null(other_reg)){
+    r2_d <- 0
+  } else{
+    reg2 <- stats::as.formula(
+      paste(treatment, paste(other_reg, collapse= "+"), sep = "~")
+    )
+    r2_d <- summary(stats::lm(reg2, data=d1))$r.squared
+  }
 
 
-  # ----- R2YX
-  YX <- stats::as.formula(
+  R2DXj.Xmj <- (r1_d - r2_d)/(1-r2_d)
+
+
+  # ---- R2YXj.Xmj
+  reg1 <- stats::as.formula(
     paste(outcome, paste(c(bnch_reg, other_reg), collapse= "+"), sep = "~")
   )
-  R2YX <- summary(stats::lm(YX,data = d1))$r.squared
+  r1_y <- summary(stats::lm(reg1, data=d1))$r.squared
+
+  if(is.null(other_reg)){
+    r2_y <- 0
+  } else{
+    reg2 <- stats::as.formula(
+      paste(outcome, paste(c(other_reg), collapse= "+"), sep = "~")
+    )
+    r2_y <- summary(stats::lm(reg2, data=d1))$r.squared
+
+  }
+
+  R2YXj.Xmj <- (r1_y - r2_y)/(1-r2_y)
+
+
 
   # ---- R2YD_X
   # First residual: Y_X
+  YX <- stats::as.formula(
+    paste(outcome, paste(c(bnch_reg, other_reg), collapse= "+"), sep = "~")
+  )
   u1 <- stats::lm(YX, data = d1)$residuals
   u1 <- u1[!is.na(u1)]
   # Second residual: D_X
+  DX <- stats::as.formula(
+    paste(treatment, paste(c(bnch_reg, other_reg), collapse= "+"), sep = "~")
+  )
   u2 <- stats::lm(DX, data = d1)$residuals
   u2 <- u2[!is.na(u2)]
   # R2YD_X
@@ -91,20 +116,20 @@ tr2bias <- function(
   R2YD_X <- summary(stats::lm(u1[1:N]~u2[1:N]))$r.squared
 
 
-  # ---- R2DZ_X
-  R2DZ_X <- kd*(R2DXj/(1-R2DX))
+  # Compute R2DZ_X
+  R2DZ_X <- kd*(R2DXj.Xmj/(1-R2DXj.Xmj))
 
-  # ----- R2YZ_X
-  R2YZ_X <- ky*(R2YXj/(1-R2YX))
+  # Compute R2YZ_X
+  R2YZ_X <- ky*(R2YXj.Xmj/(1-R2YXj.Xmj))
 
-  # ----- R2YZ_DX
+  # Compute R2YZ_DX
   num1 <- (sqrt(R2YZ_X) - sqrt(R2YD_X)*sqrt(R2DZ_X))^2
   den1 <- (1-R2YD_X)*(1-R2DZ_X)
   R2YZ_DX <- num1/den1
 
   # --- To be used for computing bias and adjusted estimate
-  R2DZ_X_1 <- R2DZ_X
-  R2YZ_DX_1 <- R2YZ_DX
+  R2DZ_X_2 <- R2DZ_X
+  R2YZ_DX_2 <- R2YZ_DX
 
 
 
@@ -112,37 +137,37 @@ tr2bias <- function(
   # ---------- Compute bias and se of adj est
 
   # Absolute bias
-  bias_abs_1 <- (se1)*sqrt((dof1*R2YZ_DX_1*R2DZ_X_1)/(1-R2DZ_X_1))
+  bias_abs_2 <- (se1)*sqrt((dof1*R2YZ_DX_2*R2DZ_X_2)/(1-R2DZ_X_2))
 
   # tau_hat if est1>0
-  tau_hat_1_pos <- (est1 - bias_abs_1)
+  tau_hat_2_pos <- (est1 - bias_abs_2)
   # tau_hat if est1<0
-  tau_hat_1_neg <- (est1 + bias_abs_1)
+  tau_hat_2_neg <- (est1 + bias_abs_2)
 
   # Std Err of tau_hat
-  A <- (1-R2YZ_DX_1)/(1-R2DZ_X_1)
+  A <- (1-R2YZ_DX_2)/(1-R2DZ_X_2)
   B <- dof1/(dof1-1)
-  suppressWarnings(se_tauhat_1 <- se1*sqrt(A*B))
+  suppressWarnings(se_tauhat_2 <- se1*sqrt(A*B))
 
   # Lower bound of CI if est1>0
-  ci_lb_p <- tau_hat_1_pos - abs(stats::qt((alpha/2),df=dof1,lower.tail = TRUE))*se_tauhat_1
+  ci_lb_p <- tau_hat_2_pos - abs(stats::qt((alpha/2),df=dof1,lower.tail = TRUE))*se_tauhat_2
 
   # Upper bound of CI if est1>0
-  ci_ub_p <- tau_hat_1_pos + abs(stats::qt((alpha/2),df=dof1,lower.tail = TRUE))*se_tauhat_1
+  ci_ub_p <- tau_hat_2_pos + abs(stats::qt((alpha/2),df=dof1,lower.tail = TRUE))*se_tauhat_2
 
   # Lower bound of CI if est1<0
-  ci_lb_n <- tau_hat_1_neg - abs(stats::qt((alpha/2),df=dof1,lower.tail = TRUE))*se_tauhat_1
+  ci_lb_n <- tau_hat_2_neg - abs(stats::qt((alpha/2),df=dof1,lower.tail = TRUE))*se_tauhat_2
 
   # Upper bound of CI if est1<0
-  ci_ub_n <- tau_hat_1_neg + abs(stats::qt((alpha/2),df=dof1,lower.tail = TRUE))*se_tauhat_1
+  ci_ub_n <- tau_hat_2_neg + abs(stats::qt((alpha/2),df=dof1,lower.tail = TRUE))*se_tauhat_2
 
   # Return
   return(
     list(
       # Adj std err when unadj est>0
-      adjestp=tau_hat_1_pos,
+      adjestp=tau_hat_2_pos,
       # Adj std err when unadj est<0
-      adjestn=tau_hat_1_neg,
+      adjestn=tau_hat_2_neg,
       # Adj lower boundary of CI when unadj est>0
       cilbp=ci_lb_p,
       # Adj upper boundary of CI when unadj est>0
@@ -155,4 +180,3 @@ tr2bias <- function(
   )
 
 }
-

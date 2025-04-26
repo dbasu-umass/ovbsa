@@ -3,6 +3,7 @@
 export(bsal)
 export(kdkyrngtr2)
 export(linvx)
+export(pr2ncdbias)
 export(saltr2)
 export(tr2bias)
 import(dplyr)

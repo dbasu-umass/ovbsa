@@ -27,18 +27,19 @@
 #'
 #' @examples
 #'
-#' if(require("sensemakr")){
+#' require("sensemakr")
 #' Y <- "peacefactor"
 #' D <- "directlyharmed"
 #' X <- "female"
 #' X_oth <- c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur")
-#' }
+#'
 #'
 #' res3 <- saltr2(alpha=0.05,data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth,N=500)
 #'
-saltr2 <- function(alpha,data,outcome,treatment,
-                     bnch_reg,other_reg,N,maxkd=NULL,
-                     maxky=NULL,k_kd=1,k_ky=1){
+saltr2 <- function(
+    alpha,data,outcome,treatment,
+    bnch_reg,other_reg,N,maxkd=NULL,
+    maxky=NULL,k_kd=1,k_ky=1){
 
   # --- Compute ranges for kd,ky
   r1 <- ovbsa::kdkyrngtr2(
