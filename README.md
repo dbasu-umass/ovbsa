@@ -6,8 +6,9 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of `ovbsa` is to conduct sensitivity analysis of omitted
-variable bias in linear econometrics models.
+The goal of `ovbsa` (omitted variable bias sensitivity analysis) is to
+conduct sensitivity analysis of omitted variable bias in linear
+econometrics models.
 
 ## Installation
 
@@ -19,16 +20,28 @@ You can install the development version of ovbsa from
 pak::pak("dbasu-umass/ovbsa")
 ```
 
-## Example 1
+## Main functions
 
-This is a basic example which shows you how to find the bias-adjusted
-estimate, the bias-adjusted standard error and the bias-adjusted
-confidence interval in a linear regression model. The user needs to
-choose a benchmark covariate, values of the sensitivity parameters `kD`
-and `kY` and the significance level `alpha` for testing the null
-hypothesis that the treatment effect is zero.
+The main functions in this package are:
 
-Let us first load the relevant libraries.
+- `bsal`: this function conducts basic sensitivity analysis (bsal) and
+  reports the bias-adjusted estimate, the bias-adjusted standard error
+  and the bias-adjusted confidence interval in a linear regression
+  model;
+
+- `saltr2`: this function computes the probability of the conclusion of
+  the study being overturned using the total R-squared-based analysis;
+
+- `salpr2ncd`: this function computes the probability of the conclusion
+  of the study being overturned using the partial R-squared-based
+  analysis without conditioning on the treatment variable;
+
+- `salpr2cd`: this function computes the probability of the conclusion
+  of the study being overturned using the partial R-squared-based
+  analysis with conditioning on the treatment variable.
+
+Let us first load the relevant libraries and then work through two
+examples.
 
 ``` r
 library(ovbsa)
@@ -37,9 +50,21 @@ library(sensemakr)
 #> Carlos Cinelli and Chad Hazlett (2020). Making Sense of Sensitivity: Extending Omitted Variable Bias. Journal of the Royal Statistical Society, Series B (Statistical Methodology).
 ```
 
-In this example we will use use the data set `darfur` from the package
+In the examples we will use use the data set `darfur` from the package
 `sensemakr`, which studies the effect of exposure to violence on
-attitudes towards peace. Here we choose `kD=3`, `kY=3` and `alpha=0.05`
+attitudes towards peace.
+
+## Example 1
+
+This is a basic example which shows you how to find the bias-adjusted
+estimate, the bias-adjusted standard error and the bias-adjusted
+confidence interval in a linear regression model. To use this function
+the user needs to choose a benchmark covariate, values of the
+sensitivity parameters `kD` and `kY` and the significance level `alpha`
+for testing the null hypothesis that the treatment effect is zero.
+
+Here we choose the benchmark covariate as `female`, `kD=3`, `kY=3` and
+`alpha=0.05`
 
 ``` r
 ## basic example code
@@ -68,13 +93,23 @@ Now, let us see the results.
 #> adjusted_upper_CI 0.066969628  0.066226063  0.067045329
 ```
 
+Here Case 1 refers to the total R-squared-based approach; Case 2 refers
+to the partial R-squared-based approach without conditioning on the
+treatment variable; and Case 3 refers to the partial R-squared-based
+approach with conditioning on the treatment variable.
+
 ## Example 2
 
 Continuing with the previous example, we will now compute the
 probability that taking account of omitted variable bias will overturn
-the conclusion of the study. Here we choose `alpha=0.05`.
+the conclusion of the study. We will need to choose the significance
+level `alpha` for testing the null hypothesis that the treatment effect
+is zero, the mode (and median) `k_kd` of the parameter kD, and the mode
+(and median) `k_ky` of the parameter kY.
 
-First, total R-squared based analysis:
+Here we choose `alpha=0.05, k_kd=1, k_ky=1`.
+
+First, we will look at total R-squared based analysis:
 
 ``` r
 # total r2-based analysis
@@ -90,8 +125,8 @@ res1 <- ovbsa::saltr2(
 #> [1] 0.2582741
 ```
 
-Second: partial R-squared based analysis without conditioning on the
-treatment variable:
+Second: we will see the partial R-squared based analysis without
+conditioning on the treatment variable:
 
 ``` r
 res2 <- ovbsa::salpr2ncd(
@@ -106,8 +141,8 @@ res2 <- ovbsa::salpr2ncd(
 #> [1] 0.3118923
 ```
 
-Finally, partial R-squared based analysis with conditioning on the
-treatment variable:
+Finally, we look at the partial R-squared based analysis with
+conditioning on the treatment variable:
 
 ``` r
 res3 <- ovbsa::salpr2cd(
