@@ -33,8 +33,9 @@
 #' X <- "female"
 #' X_oth <- c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur")
 #'
+#' darfur1 <- dplyr::slice_sample(darfur, prop=0.25)
 #'
-#' res3 <- saltr2(alpha=0.05,data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth,N=500)
+#' res3 <- saltr2(alpha=0.05,data=darfur1,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth,N=500)
 #'
 saltr2 <- function(
     alpha,data,outcome,treatment,
