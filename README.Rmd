@@ -22,11 +22,20 @@ The goal of `ovbsa` (omitted variable bias sensitivity analysis) is to conduct s
 
 ## Installation
 
+You can install the package `ovbsa` from CRAN with:
+
+```{r}
+# uncomment this line
+# install.packages("ovbsa")
+```
+
+
 You can install the development version of ovbsa from [GitHub](https://github.com/) with:
 
 ``` r
+# uncomment these lines
 # install.packages("pak")
-pak::pak("dbasu-umass/ovbsa")
+# pak::pak("dbasu-umass/ovbsa")
 ```
 
 ## Main functions

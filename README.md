@@ -12,12 +12,20 @@ econometrics models. For details see Basu (2025).
 
 ## Installation
 
+You can install the package `ovbsa` from CRAN with:
+
+``` r
+# uncomment this line
+# install.packages("ovbsa")
+```
+
 You can install the development version of ovbsa from
 [GitHub](https://github.com/) with:
 
 ``` r
+# uncomment these lines
 # install.packages("pak")
-pak::pak("dbasu-umass/ovbsa")
+# pak::pak("dbasu-umass/ovbsa")
 ```
 
 ## Main functions
@@ -193,7 +201,7 @@ ggplot(data = res1$dataplot, aes(X1, X2, z = Z3)) +
 #> (`stat_contour_filled()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-7-1.png" width="75%" />
+<img src="man/figures/README-unnamed-chunk-8-1.png" width="75%" />
 
 For easy reference, the following information about the relevant
 variables in the data frame should be noted while constructing contour
