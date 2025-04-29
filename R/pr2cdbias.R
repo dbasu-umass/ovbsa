@@ -151,7 +151,7 @@ pr2cdbias <- function(
   f2DXj.Xmj <- sqrt(R2DXj.Xmj/(1-R2DXj.Xmj))
 
   # eta
-  myeta <- (sqrt(ky)+(fkd*f2DXj.Xmj))/(sqrt(1-(fkd*f2DXj.Xmj)^2))
+  myeta <- (sqrt(ky)+abs(fkd*f2DXj.Xmj))/(sqrt(1-(fkd*f2DXj.Xmj)^2))
 
   # R2YZ_DX
   R2YZ_DX <- (myeta^2)*(R2YXj.XmjD/(1-R2YXj.XmjD))

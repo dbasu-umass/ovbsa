@@ -75,9 +75,10 @@ kdkyrngpr2cd <- function(
   # --- fkD and kY [depends on kD]
   # Number of grid points to compute kYmax
   N <- 1000
-  kD <- seq(from=0.1,to=((1-R2DXj.Xmj)/R2DXj.Xmj),length.out=N)
+  kD <- seq(from=0,to=((1-R2DXj.Xmj)/R2DXj.Xmj),length.out=N)
   kY <- numeric(N)
-  for(i in 1:N){
+  # for loop, leave out first and last element
+  for(i in 2:(N-1)){
     # Compute fkD
     fkD <- sqrt((kD[i]*R2DXj.Xmj)/(1-kD[i]*R2DXj.Xmj))
     # Compute kY

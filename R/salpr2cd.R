@@ -53,10 +53,10 @@ salpr2cd <- function(
   )
 
   skd_temp <- seq(from=0, to=r1$kd_high,length.out=N)
-  skd <- skd_temp
+  skd <- skd_temp[-1]
 
   sky_temp <- seq(from=0, to=r1$ky_high,length.out=N)
-  sky <- sky_temp
+  sky <- sky_temp[-1]
 
   # check that choice of k_kd is permissible
   if(k_kd<min(skd)|k_kd>max(skd)){
