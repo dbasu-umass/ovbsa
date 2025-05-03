@@ -151,4 +151,4 @@ For easy reference, the following information about the relevant variables in th
 
 ## References
 
-- Basu, D. (2025). How likely is it that omitted variable bias will overturn your results? SSRN Working Paper. Available here: <https://dx.doi.org/10.2139/ssrn.4704246>
+- Basu, D. (2025). How likely is it that omitted variable bias will overturn your results? SSRN Working Paper. Available here: <doi:10.2139/ssrn.4704246>

@@ -198,4 +198,4 @@ plots like the one above:
 
 - Basu, D. (2025). How likely is it that omitted variable bias will
   overturn your results? SSRN Working Paper. Available here:
-  <https://dx.doi.org/10.2139/ssrn.4704246>
+  <doi:10.2139/ssrn.4704246>
