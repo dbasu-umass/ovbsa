@@ -1,6 +1,6 @@
 Package: ovbsa
 Title: Sensitivity Analysis of Omitted Variable Bias
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     person("Deepankar", "Basu", , "dbasu@umass.edu", role = c("aut", "cre", "cph"))
 Description: Conduct sensitivity analysis of omitted variable bias in linear econometric models using the methodology presented in Basu (2025) <doi:10.2139/ssrn.4704246>.
