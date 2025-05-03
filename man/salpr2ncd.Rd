@@ -19,7 +19,7 @@ salpr2ncd(
 )
 }
 \arguments{
-\item{alpha}{significance level for hypothesis test (e.g. 0.05)}
+\item{alpha}{significance level (scalar) for hypothesis test (e.g. 0.05)}
 
 \item{data}{data frame for analysis}
 

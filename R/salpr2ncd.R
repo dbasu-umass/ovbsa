@@ -1,6 +1,6 @@
 #' probability of conclusion being overturned using partial R2-based analysis without conditioning on treatment
 #'
-#' @param alpha significance level for hypothesis test (e.g. 0.05)
+#' @param alpha significance level (scalar) for hypothesis test (e.g. 0.05)
 #' @param data data frame for analysis
 #' @param outcome name of outcome variable
 #' @param treatment name of treatment variable
