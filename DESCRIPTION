@@ -15,4 +15,5 @@ Imports:
     tidyr
 Suggests:
     sensemakr
-URL: https://github.com/dbasu-umass/ovbsa/
+URL: https://github.com/dbasu-umass/ovbsa/, https://github.com/dbasu-umass/ovbsa
+BugReports: https://github.com/dbasu-umass/ovbsa/issues
