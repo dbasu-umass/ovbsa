@@ -48,7 +48,6 @@ The main functions in this package are:
 
 - `salpr2ncd`: this function computes the probability of the conclusion of the study being overturned using the partial R-squared-based analysis without conditioning on the treatment variable;
 
-- `salpr2cd`: this function computes the probability of the conclusion of the study being overturned using the partial R-squared-based analysis with conditioning on the treatment variable.
 
 Let us first load the relevant libraries and then work through two examples.
 
@@ -85,7 +84,7 @@ Now, let us see the results.
 (analysis1)
 ```
 
-Here Case 1 refers to the total R-squared-based approach; Case 2 refers to the partial R-squared-based approach without conditioning on the treatment variable; and Case 3 refers to the partial R-squared-based approach with conditioning on the treatment variable.
+Here Case 1 refers to the total R-squared-based approach; Case 2 refers to the partial R-squared-based approach without conditioning on the treatment variable.
 
 ## Example 2: Probability of study's conclusion being overturned
 
@@ -121,19 +120,6 @@ res2 <- ovbsa::salpr2ncd(
 
 ```
 
-Finally, we look at the partial R-squared based analysis with conditioning on the treatment variable:
-```{r}
-res3 <- ovbsa::salpr2cd(
-  alpha=0.05,data = darfur, outcome = "peacefactor",
-  treatment = "directlyharmed", bnch_reg = "female",
-  other_reg = c("village","age","farmer_dar","herder_dar",
-                "pastvoted","hhsize_darfur"),
-  N = 500, k_kd=1, k_ky=1
-)
-# probability
-(res3$frac_prob_wt)
-
-```
 
 
 ## Example 3: Contour plot of boundary of bias-adjusted confidence interval
@@ -166,4 +152,3 @@ For easy reference, the following information about the relevant variables in th
 ## References
 
 - Basu, D. (2025). How likely is it that omitted variable bias will overturn your results? SSRN Working Paper. Available here: <https://dx.doi.org/10.2139/ssrn.4704246>
-

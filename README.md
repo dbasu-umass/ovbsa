@@ -44,10 +44,6 @@ The main functions in this package are:
   of the study being overturned using the partial R-squared-based
   analysis without conditioning on the treatment variable;
 
-- `salpr2cd`: this function computes the probability of the conclusion
-  of the study being overturned using the partial R-squared-based
-  analysis with conditioning on the treatment variable.
-
 Let us first load the relevant libraries and then work through two
 examples.
 
@@ -94,21 +90,20 @@ Now, let us see the results.
 
 ``` r
 (analysis1)
-#>                        Case 1       Case 2       Case 3
-#> r2yd.x            0.021873093  0.021873093  0.021873093
-#> r2dz.x            0.008040002  0.027492860  0.027492860
-#> r2yz.dx           0.781414454  0.380969988  0.374050471
-#> estimate          0.097315819  0.097315819  0.097315819
-#> adjusted_estimate 0.045525612  0.029779889  0.030396023
-#> adjusted_se       0.010924114  0.018566585  0.018670065
-#> adjusted_lower_CI 0.024081595 -0.006666285 -0.006253282
-#> adjusted_upper_CI 0.066969628  0.066226063  0.067045329
+#>                        Case 1       Case 2
+#> r2yd.x            0.021873093  0.021873093
+#> r2dz.x            0.008040002  0.027492860
+#> r2yz.dx           0.781414454  0.380969988
+#> estimate          0.097315819  0.097315819
+#> adjusted_estimate 0.045525612  0.029779889
+#> adjusted_se       0.010924114  0.018566585
+#> adjusted_lower_CI 0.024081595 -0.006666285
+#> adjusted_upper_CI 0.066969628  0.066226063
 ```
 
 Here Case 1 refers to the total R-squared-based approach; Case 2 refers
 to the partial R-squared-based approach without conditioning on the
-treatment variable; and Case 3 refers to the partial R-squared-based
-approach with conditioning on the treatment variable.
+treatment variable.
 
 ## Example 2: Probability of study’s conclusion being overturned
 
@@ -153,22 +148,6 @@ res2 <- ovbsa::salpr2ncd(
 #> [1] 0.3118923
 ```
 
-Finally, we look at the partial R-squared based analysis with
-conditioning on the treatment variable:
-
-``` r
-res3 <- ovbsa::salpr2cd(
-  alpha=0.05,data = darfur, outcome = "peacefactor",
-  treatment = "directlyharmed", bnch_reg = "female",
-  other_reg = c("village","age","farmer_dar","herder_dar",
-                "pastvoted","hhsize_darfur"),
-  N = 500, k_kd=1, k_ky=1
-)
-# probability
-(res3$frac_prob_wt)
-#> [1] 0.3384226
-```
-
 ## Example 3: Contour plot of boundary of bias-adjusted confidence interval
 
 The above functions used to compute the probability of a study’s
@@ -201,7 +180,7 @@ ggplot(data = res1$dataplot, aes(X1, X2, z = Z3)) +
 #> (`stat_contour_filled()`).
 ```
 
-<img src="man/figures/README-unnamed-chunk-8-1.png" width="75%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="75%" />
 
 For easy reference, the following information about the relevant
 variables in the data frame should be noted while constructing contour
