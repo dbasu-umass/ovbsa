@@ -2,30 +2,37 @@
 % Please edit documentation in R/baci.R
 \name{baci}
 \alias{baci}
-\title{Compute bias adjusted confidence interval (BACI)}
+\title{Compute bias adjusted confidence interval using truncated exponential prior distributions for kD, kY.}
 \usage{
-baci(fit, treatment = treatment, benchmark = benchmark, N, alpha = alpha)
+baci(fit, treatment, benchmark, N = 1000, alpha = 5/100, medkd = 1, medky = 1)
 }
 \arguments{
 \item{fit}{An object of class \code{lm}.}
 
 \item{treatment}{A character string naming the treatment variable.}
 
-\item{benchmark}{A character string naming the benchmark covariate.}
+\item{benchmark}{A character string naming the benchmark variable.}
 
 \item{N}{Numeric value for grid size.}
 
 \item{alpha}{Significance level.}
+
+\item{medkd}{Median of the distribution of kD (default=1).}
+
+\item{medky}{Median of the distribution of kY (default=1).}
 }
 \value{
 A list containing the following two elements:
 \item{results}{A data frame with 2 rows ("Unadjusted" and "Bias-adjusted") and
 2 columns ("Lower" and "Upper") containing the computed 100*(1-alpha)\\%
 unadjusted and bias-adjusted confidence intervals.}
-\item{support_kdky_plot}{A \code{ggplot2} plot object visualizing the support analysis.}
+\item{undstats}{A data frame with of underlying stats containing the estimate, std error,
+max(kD) and max(k(Y).}
+\item{support_kdky_plot}{A \code{ggplot2} plot object visualizing the support of
+the joint distribution of (kD,kY).}
 }
 \description{
-Compute bias adjusted confidence interval (BACI)
+Compute bias adjusted confidence interval using truncated exponential prior distributions for kD, kY.
 }
 \examples{
 # CRAN requires checking if the optional package is installed before running the example

@@ -1,17 +1,22 @@
-#' Compute bias adjusted confidence interval (BACI)
+#' Compute bias adjusted confidence interval using truncated exponential prior distributions for kD, kY.
 #'
 #'
 #' @param fit An object of class \code{lm}.
 #' @param treatment A character string naming the treatment variable.
-#' @param benchmark A character string naming the benchmark covariate.
+#' @param benchmark A character string naming the benchmark variable.
 #' @param N Numeric value for grid size.
 #' @param alpha Significance level.
+#' @param medkd Median of the distribution of kD (default=1).
+#' @param medky Median of the distribution of kY (default=1).
 #'
 #' @return A list containing the following two elements:
 #' \item{results}{A data frame with 2 rows ("Unadjusted" and "Bias-adjusted") and
 #' 2 columns ("Lower" and "Upper") containing the computed 100*(1-alpha)\%
 #' unadjusted and bias-adjusted confidence intervals.}
-#' \item{support_kdky_plot}{A \code{ggplot2} plot object visualizing the support analysis.}
+#' \item{undstats}{A data frame with of underlying stats containing the estimate, std error,
+#' max(kD) and max(k(Y).}
+#' \item{support_kdky_plot}{A \code{ggplot2} plot object visualizing the support of
+#' the joint distribution of (kD,kY).}
 #'
 #'
 #' @export
@@ -36,9 +41,10 @@
 #'                benchmark = "female", N = myN, alpha = 1/100)
 #'}
 baci <- function(fit,
-         treatment = treatment,
-         benchmark = benchmark,
-         N, alpha = alpha){
+         treatment,
+         benchmark,
+         N = 1000, alpha = 5/100,
+         medkd = 1, medky = 1){
 
 
   tictoc::tic("Extracting regression quantities ", "\n")
@@ -108,6 +114,16 @@ baci <- function(fit,
 
   # kymax: eqn 12 in Basu (2026)
   kymax <- (1 - r2y_bench)/(r2y_bench)
+
+
+  # Check if user supplied median(kD) and median(kY) are permissible
+  if (!is.numeric(medkd) || medkd < 0 || medkd > kdmax) {
+    stop(paste0("medkd must be a numeric value between 0 and ", kdmax, "."))
+  }
+
+  if (!is.numeric(medky) || medky < 0 || medky > kymax) {
+    stop(paste0("medky must be a numeric value between 0 and ", kymax, "."))
+  }
 
   # construct grid
   kd_grid <- seq(0, kdmax, length = N)
@@ -228,16 +244,16 @@ baci <- function(fit,
   # --- see section 3.2, Basu (2026)
   # solve for beta in the distribution for kD
   mybetaexp_kd <- stats::uniroot(
-    function(x) 1 - exp(-1/x) - pexp(kdmax)/2,
+    function(x) 1 - exp(-(medkd/x)) - pexp(kdmax)/2,
     lower = 0.01,
-    upper= 10
+    upper= kdmax
   )$root
 
   # solve for beta in the distribution for kY
   mybetaexp_ky <- stats::uniroot(
-    function(x) 1 - exp(-1/x) - pexp(kymax)/2,
+    function(x) 1 - exp(-(medky/x)) - pexp(kymax)/2,
     lower = 0.01,
-    upper= 10
+    upper= kymax
   )$root
 
   # weights
@@ -277,13 +293,22 @@ baci <- function(fit,
     rbind(ci_unadj,ci_adj)
   )
   colnames(biasadjci) <- c("Lower","Upper")
-  rownames(biasadjci) <- c("Unadjusted","Bias-adjusted")
+  rownames(biasadjci) <- c("Unadjusted CI","Bias-adjusted CI")
+
+  # --- Underlying stats
+  und_stats <- as.data.frame(c(tau_hat,se_hat,kdmax,kymax))
+  rownames(und_stats) <- c(
+    "estimate","std error","max(kD)","max(kY)"
+    )
+  colnames(und_stats) <- c("Values")
+
 
   cat("Results available now!", "\n")
 
   # Return named list
   return(list(
     results = biasadjci,
+    undstats = und_stats,
     support_kdky_plot = support_kdky_plot
   ))
 
