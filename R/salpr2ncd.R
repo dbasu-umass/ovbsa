@@ -42,6 +42,7 @@ salpr2ncd <- function(
     bnch_reg,other_reg,N,maxkd=NULL,
     maxky=NULL,k_kd=1,k_ky=1){
 
+  lifecycle::deprecate_warn("2.1.0", "old_function()", details = "Use baci() instead.")
 
   # --- Compute ranges for kd,ky
   r1 <- ovbsa::kdkyrngpr2ncd(
