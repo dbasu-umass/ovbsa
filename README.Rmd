@@ -18,7 +18,15 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of `ovbsa` (omitted variable bias sensitivity analysis) is to conduct sensitivity analysis of omitted variable bias in linear econometrics models. For details see Basu (2025).
+The goal of `ovbsa` (omitted variable bias sensitivity analysis) is to conduct sensitivity analysis of reported results in linear econometrics models to the presence of omitted variable bias. The key function in this package computes a bias-adjusted confidence interval by implementing the method presented in Basu (2026). 
+
+Basu (2026)'s method builds on and extends Cinelli and Hazlett (2020). Consider a linear econometric model where you believe there is an unobserved confounder. Choose a regressor that is included in the model as a benchmark covariate. Let $k_D$ and $k_Y$ denote sensitivity parameters. 
+
+Here $k_D$ captures the strength of association of the unobserved confounder with the treatment variable (i.e., regressor of interest) relative to the strength of association of the benchmark covariate with the treatment variable. Similarly, $k_Y$ captures the strength of association of the unobserved confounder with the outcome variable relative to the strength of association of the benchmark covariate with the outcome variable.  
+
+Cinelli and Hazlett (2020) had presented a method to compute omitted variable bias-adjusted confidence intervals for specific values of $k_D$ and $k_Y$. Basu (2026) asks us to consider $k_D$ and $k_Y$ as random variables, imposes reasonable prior distributions on these random variables and then computes bias-adjusted confidence intervals by integrating out $k_D$ and $k_Y$. 
+
+In this package, I use independent truncated exponential distributions as prior distribution of $k_D$ and $k_Y$. For more details see Basu (2026).
 
 ## Installation
 
@@ -38,18 +46,14 @@ You can install the development version of ovbsa from [GitHub](https://github.co
 # pak::pak("dbasu-umass/ovbsa")
 ```
 
-## Main functions
+## Main function
 
-The main functions in this package are:
+The main function in this package is:
 
-- `bsal`: this function conducts basic sensitivity analysis (bsal) and reports the bias-adjusted estimate, the bias-adjusted standard error and the bias-adjusted confidence interval in a linear regression model;
-
-- `saltr2`: this function computes the probability of the conclusion of the study being overturned using the total R-squared-based analysis;
-
-- `salpr2ncd`: this function computes the probability of the conclusion of the study being overturned using the partial R-squared-based analysis without conditioning on the treatment variable;
+- `baci`: this function computes the bias-adjusted confidence interval (baci) in a linear regression model when $k_D$ and $k_Y$ follow truncated exponential distributions; the function returns a list `results` containing the unadjusted and bias-adjusted confidence intervals; it also returns a list `undstats` containing the estimate, the unadjusted stamdard error, the max of $k_D$ and the max of $k_Y$; it also returns a `ggplot2` plot object visualizing the support of the joint distribution of $(k_D,k_Y)$.
 
 
-Let us first load the relevant libraries and then work through two examples.
+Let us first load the relevant libraries and then work through an example.
 
 ```{r}
 library(ovbsa)
@@ -60,95 +64,45 @@ library(ggplot2)
 
 In the examples we will use use the data set `darfur` from the package `sensemakr`, which studies the effect of exposure to violence on attitudes towards peace. 
 
-## Example 1: Bias-adjusted confidence interval
+## Bias-adjusted confidence interval
 
-This is a basic example which shows you how to find the bias-adjusted estimate, the bias-adjusted standard error and the bias-adjusted confidence interval in a linear regression model. To use this function the user needs to choose a benchmark covariate, values of the sensitivity parameters `kD` and `kY` and the significance level `alpha` for testing the null hypothesis that the treatment effect is zero. 
+This is a basic example which shows you how to find the bias-adjusted estimate, the bias-adjusted standard error and the bias-adjusted confidence interval in a linear regression model. To use this function the user needs to choose a benchmark covariate, the significance level `alpha` for testing the null hypothesis that the treatment effect is zero and `N` to create a grid of size $N \times N$ over the support of the distribution of $(k_D,k_Y)$. 
 
-Here we choose the benchmark covariate as `female`, `kD=3`, `kY=3` and `alpha=0.05`
+Here we choose the benchmark covariate as `female`, `alpha=0.05` and `N=1000`. In the first step, we estimate the model with ordinary least squares using the `lm` function.
 
 ```{r example1}
-## basic example code
-analysis1 <- ovbsa::bsal(
-  kd=3,ky=3,alpha=0.05,data=darfur,
-  outcome = "peacefactor",
-  treatment = "directlyharmed",
-  bnch_reg = "female",
-  other_reg = c("village","age","farmer_dar","herder_dar",
-                "pastvoted","hhsize_darfur")
-)
+## fit model
+fit <- lm(peacefactor ~ directlyharmed + age + farmer_dar + herder_dar +
+             pastvoted + hhsize_darfur + female + village,
+             data = sensemakr::darfur)
 ```
 
-Now, let us see the results.
+In the second step, we call `baci` to conduct sensitivity analysis.
 
 ```{r}
-(analysis1)
+# conduct sensitivity analysis
+res1 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
+                benchmark = "female", N = 1000, alpha = 5/100)
 ```
 
-Here Case 1 refers to the total R-squared-based approach; Case 2 refers to the partial R-squared-based approach without conditioning on the treatment variable.
-
-## Example 2: Probability of study's conclusion being overturned
-
-Continuing with the previous example, we will now compute the probability that taking account of omitted variable bias will overturn the conclusion of the study. We will need to choose the significance level `alpha` for testing the null hypothesis that the treatment effect is zero, the mode (and median) `k_kd` of the parameter kD, and the mode (and median) `k_ky` of the parameter kY.
-
-Here we choose `alpha=0.05, k_kd=1, k_ky=1`.
-
-First, we will look at total R-squared based analysis:
+Let us see the results, starting with the underlying statistics:
 ```{r}
-# total r2-based analysis
-res1 <- ovbsa::saltr2(
-  alpha=0.05,data = darfur, outcome = "peacefactor",
-  treatment = "directlyharmed", bnch_reg = "female",
-  other_reg = c("village","age","farmer_dar","herder_dar",
-                "pastvoted","hhsize_darfur"),
-  N = 500, k_kd=1, k_ky=1
-)
-# probability
-(res1$frac_prob_wt)
+res1$undstats
 ```
 
-Second: we will see the partial R-squared based analysis without conditioning on the treatment variable:
+Let us now see the unadjusted and bias-adjusted confidence intervals.
 ```{r}
-res2 <- ovbsa::salpr2ncd(
-  alpha=0.05,data = darfur, outcome = "peacefactor",
-  treatment = "directlyharmed", bnch_reg = "female",
-  other_reg = c("village","age","farmer_dar","herder_dar",
-                "pastvoted","hhsize_darfur"),
-  N = 500, k_kd=1, k_ky=1
-)
-# probability
-(res2$frac_prob_wt)
-
+res1$results
 ```
 
-
-
-## Example 3: Contour plot of boundary of bias-adjusted confidence interval
-
-The above functions used to compute the probability of a study's conclusion being overturned implicitly used a contour plot of the boundary of the bias-adjusted confidence interval. The data is available as an output to be used by researchers to create that plot, if needed. 
-
-I will use the output of the total R-squared-based analysis to create the contour plot. The data frame to construct the contour plot is available as a data frame in `res1$dataplot`. For the contour plot, we will need three variables from this data frame: `X1` as the x-axis, `X2` as the y-axis and `Z3` as the z-axis (value of the lower boundary of the bias-adjusted confidence interval).
-
-```{r, out.width="75%"}
-# the contour plot  
-ggplot(data = res1$dataplot, aes(X1, X2, z = Z3)) +
-      geom_contour() +
-      geom_contour_filled() +
-      labs(
-        title = "Contour plot of lower boundary of bias-adj CI",
-        subtitle = "Total R2-based covariate benchmarking"
-      ) +
-      xlab(expression(k[D])) +
-      ylab(expression(k[Y])) +
-      theme_minimal()
+Finally, let us see a picture of the support of the joint prior distribution of $k_D$ and $k_Y$.
+```{r}
+print(res1$support_kdky_plot)
 ```
-
-For easy reference, the following information about the relevant variables in the data frame should be noted while constructing contour plots like the one above:
-
-- when the unadjusted estimate is positive, use  `X1` as the x-axis, `X2` as the y-axis and `Z3` as the z-axis (value of the lower boundary of the bias-adjusted confidence interval);
-
-- when the unadjusted estimate is negative, use  `X1` as the x-axis, `X2` as the y-axis and `Z4` as the z-axis (value of the lower boundary of the bias-adjusted confidence interval).
 
 
 ## References
 
-- Basu, D. (2025). How likely is it that omitted variable bias will overturn your results? SSRN Working Paper. Available here: <doi:10.2139/ssrn.4704246>
+- Basu, D. (2026). How likely is it that omitted variable bias will overturn your results? SSRN Working Paper. Available here: <doi:10.2139/ssrn.4704246>
+
+- Cinelli, C. and Hazlett, C. (2020). Making Sense of Sensitivity: Extending Omitted Variable Bias. *Journal of the Royal Statistical Society Series B: Statistical Methodology,* 82(1):39–67

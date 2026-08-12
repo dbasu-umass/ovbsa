@@ -13,7 +13,7 @@
 #' \item{results}{A data frame with 2 rows ("Unadjusted" and "Bias-adjusted") and
 #' 2 columns ("Lower" and "Upper") containing the computed 100*(1-alpha)\%
 #' unadjusted and bias-adjusted confidence intervals.}
-#' \item{undstats}{A data frame with of underlying stats containing the estimate, std error,
+#' \item{undstats}{A data frame of underlying statistics: the estimate, std error,
 #' max(kD) and max(k(Y).}
 #' \item{support_kdky_plot}{A \code{ggplot2} plot object visualizing the support of
 #' the joint distribution of (kD,kY).}
