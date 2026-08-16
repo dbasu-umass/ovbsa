@@ -18,13 +18,13 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of `ovbsa` (omitted variable bias sensitivity analysis) is to conduct sensitivity analysis of reported results in linear econometrics models to the presence of omitted variable bias. The key function in this package computes a bias-adjusted confidence interval by implementing the method presented in Basu (2026). 
+The goal of `ovbsa` (omitted variable bias sensitivity analysis) is to conduct sensitivity analysis of reported results in linear econometrics models to the presence of omitted variable bias. The key function in this package computes a bias-adjusted confidence interval by implementing the method presented in Basu (2026), which, in turn, builds on and extends Cinelli and Hazlett (2020). 
 
-Basu (2026)'s method builds on and extends Cinelli and Hazlett (2020). Consider a linear econometric model where you believe there is an unobserved confounder. Choose a regressor that is included in the model as a benchmark covariate. Let $k_D$ and $k_Y$ denote sensitivity parameters. 
+Consider the linear regression of an outcome, $Y$ , on a treatment, $D$, a set of observed covariates, $X$, and an unobserved confounder, $Z$. Choose a regressor, $X_j$, that is included in the model as a benchmark covariate. Let $k_D$ and $k_Y$ denote sensitivity parameters. 
 
-Here $k_D$ captures the strength of association of the unobserved confounder with the treatment variable (i.e., regressor of interest) relative to the strength of association of the benchmark covariate with the treatment variable. Similarly, $k_Y$ captures the strength of association of the unobserved confounder with the outcome variable relative to the strength of association of the benchmark covariate with the outcome variable.  
+Here $k_D$ captures the strength of association of $Z$ with $D$ relative to the strength of association of the benchmark covariate, $X_j$, with $D$. Similarly, $k_Y$ captures the strength of association of $Z$ with $Y$ relative to the strength of association of $X_j$ with $Y$. The strengths of associations are measured with partial R-squared conditional on all the regressors other than the benchmark covariate, $X_j$. 
 
-Cinelli and Hazlett (2020) had presented a method to compute omitted variable bias-adjusted confidence intervals for specific values of $k_D$ and $k_Y$. Basu (2026) asks us to consider $k_D$ and $k_Y$ as random variables, imposes reasonable prior distributions on these random variables and then computes bias-adjusted confidence intervals by integrating out $k_D$ and $k_Y$. 
+Cinelli and Hazlett (2020) had presented a method to compute omitted variable bias-adjusted confidence intervals for specific values of $k_D$ and $k_Y$. Basu (2026) asks us to consider $k_D$ and $k_Y$ as random variables, identifies their supports, imposes reasonable prior distributions on these random variables and then computes bias-adjusted confidence intervals by integrating out $k_D$ and $k_Y$ over their supports. 
 
 In this package, I use independent truncated exponential distributions as prior distribution of $k_D$ and $k_Y$. For more details see Basu (2026).
 
@@ -50,7 +50,7 @@ You can install the development version of ovbsa from [GitHub](https://github.co
 
 The main function in this package is:
 
-- `baci`: this function computes the bias-adjusted confidence interval (baci) in a linear regression model when $k_D$ and $k_Y$ follow truncated exponential distributions; the function returns a list `results` containing the unadjusted and bias-adjusted confidence intervals; it also returns a list `undstats` containing the estimate, the unadjusted stamdard error, the max of $k_D$ and the max of $k_Y$; it also returns a `ggplot2` plot object visualizing the support of the joint distribution of $(k_D,k_Y)$.
+- `baci`: this function computes the Bias-Adjusted Confidence Interval (baci) in a linear regression model when $k_D$ and $k_Y$ follow truncated exponential distributions; the function returns a list `results` containing the unadjusted and bias-adjusted confidence intervals; it also returns a list `undstats` containing the estimate, the unadjusted stamdard error, the max of $k_D$ and the max of $k_Y$; it also returns a `ggplot2` plot object visualizing the support of the joint distribution of $(k_D,k_Y)$.
 
 
 Let us first load the relevant libraries and then work through an example.
@@ -62,13 +62,19 @@ library(ggplot2)
 
 ```
 
-In the examples we will use use the data set `darfur` from the package `sensemakr`, which studies the effect of exposure to violence on attitudes towards peace. 
+In the examples we will use use the data set `darfur` from the package `sensemakr`, which studies the effect of exposure to violence ($D$) on attitudes towards peace ($Y$) holding a set of covaraites constant ($X$). The researchers suspects there is an omitted variable ($Z$) and uses `female` as the benchmark covariate, $X_j$. 
 
 ## Bias-adjusted confidence interval
 
-This is a basic example which shows you how to find the bias-adjusted estimate, the bias-adjusted standard error and the bias-adjusted confidence interval in a linear regression model. To use this function the user needs to choose a benchmark covariate, the significance level `alpha` for testing the null hypothesis that the treatment effect is zero and `N` to create a grid of size $N \times N$ over the support of the distribution of $(k_D,k_Y)$. 
+This is a basic example which shows you how to find the bias-adjusted estimate, the bias-adjusted standard error and the bias-adjusted confidence interval in a linear regression model. 
 
-Here we choose the benchmark covariate as `female`, `alpha=0.05` and `N=1000`. In the first step, we estimate the model with ordinary least squares using the `lm` function.
+To use this function the user needs to choose a benchmark covariate (which we have already done), the significance level `alpha` for testing the null hypothesis that the treatment effect is zero, `N` to create a grid of size $N \times N$ over the support of the distribution of $(k_D,k_Y)$ and the medians of the distributions of $k_D$ and $k_Y$ respectively. 
+
+The default values of these medians are each set to $1$ (to capture the idea that the unobserved confounder is as likely to be more strongly associated with the outcome/treatment as less). If this default seems reasonable, then the user does not need to choose the medians. Otherwise, she can choose specific values for `medkd` (median of the distribution of $k_D$) and `medky` (median of the distribution of $k_D$). 
+
+Here we choose the benchmark covariate as `female`, `alpha=0.05` and `N=1000` (we use the default values for the medians of the distributions of $k_D$ and $k_Y$). 
+
+In the first step of the analysis, we estimate the model with ordinary least squares using the `lm` function.
 
 ```{r example1}
 ## fit model
@@ -89,11 +95,14 @@ Let us see the results, starting with the underlying statistics:
 ```{r}
 res1$undstats
 ```
+The unadjusted estimate and standard errors are `0.097` and `0.023` respectively. We also see that the maximum values that $k_D$ and $k_Y$ can take are `109.12` and `8.17`, respectively. Thus, the support of $k_D$ is `[0, 109.12]` and the support of $k_Y$ is `[0,8.17]`.
 
 Let us now see the unadjusted and bias-adjusted confidence intervals.
 ```{r}
 res1$results
 ```
+The unadjusted `95%` confidence interval is `[0.052,0.142]` and the bias-adjusted `95%` confidence interval is `[0.026,0.123]`. Thus, even after taking account of possible omitted variable bias, the reported results holds: exposure to violence has a positive impact on the attitude towards peace; the effect does not wash out once we take account of omitted variable bias. 
+
 
 Finally, let us see a picture of the support of the joint prior distribution of $k_D$ and $k_Y$.
 ```{r}
