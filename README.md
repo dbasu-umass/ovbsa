@@ -16,8 +16,9 @@ on and extends Cinelli and Hazlett (2020).
 
 Consider the linear regression of an outcome, $Y$ , on a treatment, $D$,
 a set of observed covariates, $X$, and an unobserved confounder, $Z$.
-Choose a regressor, $X_j$, that is included in the model as a benchmark
-covariate. Let $k_D$ and $k_Y$ denote sensitivity parameters.
+Choose a regressor, $X_j$, that is included in the model, as a
+*benchmark covariate*. Let $k_D$ and $k_Y$ denote sensitivity
+parameters.
 
 Here $k_D$ captures the strength of association of $Z$ with $D$ relative
 to the strength of association of the benchmark covariate, $X_j$, with
@@ -128,9 +129,9 @@ In the second step, we call `baci` to conduct sensitivity analysis.
 # conduct sensitivity analysis
 res1 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
                 benchmark = "female", N = 1000, alpha = 5/100)
-#> Extracting regression quantities : 0.84 sec elapsed
-#> Computing values on the grid : 0.44 sec elapsed
-#> Prior distribution: truncated exponential : 1.05 sec elapsed
+#> Extracting regression quantities : 0.89 sec elapsed
+#> Computing values on the grid : 0.51 sec elapsed
+#> Prior distribution: truncated exponential : 1.27 sec elapsed
 #> Results available now!
 ```
 
@@ -175,11 +176,47 @@ print(res1$support_kdky_plot)
 
 <img src="man/figures/README-unnamed-chunk-7-1.png" alt="" width="100%" />
 
+While above we have computed the `95%` bias-adjusted confidence
+interval, we can change the significane level easily. Here, let us
+compute the `90%` and `99%` bias-adjusted confidence intervals.
+
+``` r
+# conduct sensitivity analysis: 90% conf int
+res2 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
+                benchmark = "female", N = 1000, alpha = 10/100)
+#> Extracting regression quantities : 0.93 sec elapsed
+#> Computing values on the grid : 0.21 sec elapsed
+#> Prior distribution: truncated exponential : 1.08 sec elapsed
+#> Results available now!
+# conduct sensitivity analysis: 99% conf int
+res3 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
+                benchmark = "female", N = 1000, alpha = 1/100)
+#> Extracting regression quantities : 0.81 sec elapsed
+#> Computing values on the grid : 0.27 sec elapsed
+#> Prior distribution: truncated exponential : 1.11 sec elapsed
+#> Results available now!
+```
+
+Now let us see the results.
+
+``` r
+# 90% conf int
+res2$results
+#>                       Lower     Upper
+#> Unadjusted CI    0.05901691 0.1356147
+#> Bias-adjusted CI 0.03388222 0.1157064
+
+# 99% conf int
+res3$results
+#>                       Lower     Upper
+#> Unadjusted CI    0.03726458 0.1573671
+#> Bias-adjusted CI 0.01039368 0.1385320
+```
+
 ## References
 
 - Basu, D. (2026). How likely is it that omitted variable bias will
-  overturn your results? SSRN Working Paper. Available here:
-  <doi:10.2139/ssrn.4704246>
+  overturn your results? *Economics Letters*.
 
 - Cinelli, C. and Hazlett, C. (2020). Making Sense of Sensitivity:
   Extending Omitted Variable Bias. *Journal of the Royal Statistical

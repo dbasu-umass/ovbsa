@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 The goal of `ovbsa` (omitted variable bias sensitivity analysis) is to conduct sensitivity analysis of reported results in linear econometrics models to the presence of omitted variable bias. The key function in this package computes a bias-adjusted confidence interval by implementing the method presented in Basu (2026), which, in turn, builds on and extends Cinelli and Hazlett (2020). 
 
-Consider the linear regression of an outcome, $Y$ , on a treatment, $D$, a set of observed covariates, $X$, and an unobserved confounder, $Z$. Choose a regressor, $X_j$, that is included in the model as a benchmark covariate. Let $k_D$ and $k_Y$ denote sensitivity parameters. 
+Consider the linear regression of an outcome, $Y$ , on a treatment, $D$, a set of observed covariates, $X$, and an unobserved confounder, $Z$. Choose a regressor, $X_j$, that is included in the model, as a *benchmark covariate*. Let $k_D$ and $k_Y$ denote sensitivity parameters. 
 
 Here $k_D$ captures the strength of association of $Z$ with $D$ relative to the strength of association of the benchmark covariate, $X_j$, with $D$. Similarly, $k_Y$ captures the strength of association of $Z$ with $Y$ relative to the strength of association of $X_j$ with $Y$. The strengths of associations are measured with partial R-squared conditional on all the regressors other than the benchmark covariate, $X_j$. 
 
@@ -109,9 +109,27 @@ Finally, let us see a picture of the support of the joint prior distribution of 
 print(res1$support_kdky_plot)
 ```
 
+While above we have computed the `95%` bias-adjusted confidence interval, we can change the significane level easily. Here, let us compute the `90%` and `99%` bias-adjusted confidence intervals.
+```{r}
+# conduct sensitivity analysis: 90% conf int
+res2 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
+                benchmark = "female", N = 1000, alpha = 10/100)
+# conduct sensitivity analysis: 99% conf int
+res3 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
+                benchmark = "female", N = 1000, alpha = 1/100)
+```
+Now let us see the results.
+```{r}
+# 90% conf int
+res2$results
+
+# 99% conf int
+res3$results
+```
+
 
 ## References
 
-- Basu, D. (2026). How likely is it that omitted variable bias will overturn your results? SSRN Working Paper. Available here: <doi:10.2139/ssrn.4704246>
+- Basu, D. (2026). How likely is it that omitted variable bias will overturn your results? *Economics Letters*. 
 
 - Cinelli, C. and Hazlett, C. (2020). Making Sense of Sensitivity: Extending Omitted Variable Bias. *Journal of the Royal Statistical Society Series B: Statistical Methodology,* 82(1):39–67
