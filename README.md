@@ -129,9 +129,9 @@ In the second step, we call `baci` to conduct sensitivity analysis.
 # conduct sensitivity analysis
 res1 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
                 benchmark = "female", N = 1000, alpha = 5/100)
-#> Extracting regression quantities : 0.89 sec elapsed
-#> Computing values on the grid : 0.51 sec elapsed
-#> Prior distribution: truncated exponential : 1.27 sec elapsed
+#> Extracting regression quantities : 0.86 sec elapsed
+#> Computing values on the grid : 0.34 sec elapsed
+#> Prior distribution: truncated exponential : 1.11 sec elapsed
 #> Results available now!
 ```
 
@@ -184,16 +184,16 @@ compute the `90%` and `99%` bias-adjusted confidence intervals.
 # conduct sensitivity analysis: 90% conf int
 res2 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
                 benchmark = "female", N = 1000, alpha = 10/100)
-#> Extracting regression quantities : 0.93 sec elapsed
-#> Computing values on the grid : 0.21 sec elapsed
-#> Prior distribution: truncated exponential : 1.08 sec elapsed
+#> Extracting regression quantities : 1.01 sec elapsed
+#> Computing values on the grid : 0.22 sec elapsed
+#> Prior distribution: truncated exponential : 1.17 sec elapsed
 #> Results available now!
 # conduct sensitivity analysis: 99% conf int
 res3 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
                 benchmark = "female", N = 1000, alpha = 1/100)
-#> Extracting regression quantities : 0.81 sec elapsed
-#> Computing values on the grid : 0.27 sec elapsed
-#> Prior distribution: truncated exponential : 1.11 sec elapsed
+#> Extracting regression quantities : 0.82 sec elapsed
+#> Computing values on the grid : 0.23 sec elapsed
+#> Prior distribution: truncated exponential : 1.05 sec elapsed
 #> Results available now!
 ```
 
@@ -212,6 +212,9 @@ res3$results
 #> Unadjusted CI    0.03726458 0.1573671
 #> Bias-adjusted CI 0.01039368 0.1385320
 ```
+
+Thus, we have replicated the second row in panel A, Table 1 in Basu
+(2026).
 
 ## References
 

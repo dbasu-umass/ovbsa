@@ -126,7 +126,7 @@ res2$results
 # 99% conf int
 res3$results
 ```
-
+Thus, we have replicated the second row in panel A, Table 1 in Basu (2026).
 
 ## References
 
