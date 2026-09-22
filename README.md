@@ -129,9 +129,9 @@ In the second step, we call `baci` to conduct sensitivity analysis.
 # conduct sensitivity analysis
 res1 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
                 benchmark = "female", N = 1000, alpha = 5/100)
-#> Extracting regression quantities : 0.86 sec elapsed
-#> Computing values on the grid : 0.34 sec elapsed
-#> Prior distribution: truncated exponential : 1.11 sec elapsed
+#> Extracting regression quantities : 0.91 sec elapsed
+#> Computing values on the grid : 0.36 sec elapsed
+#> Prior distribution: truncated exponential : 1.12 sec elapsed
 #> Results available now!
 ```
 
@@ -184,16 +184,16 @@ compute the `90%` and `99%` bias-adjusted confidence intervals.
 # conduct sensitivity analysis: 90% conf int
 res2 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
                 benchmark = "female", N = 1000, alpha = 10/100)
-#> Extracting regression quantities : 1.01 sec elapsed
+#> Extracting regression quantities : 0.92 sec elapsed
 #> Computing values on the grid : 0.22 sec elapsed
-#> Prior distribution: truncated exponential : 1.17 sec elapsed
+#> Prior distribution: truncated exponential : 1.22 sec elapsed
 #> Results available now!
 # conduct sensitivity analysis: 99% conf int
 res3 <- ovbsa::baci(fit = fit, treatment = "directlyharmed",
                 benchmark = "female", N = 1000, alpha = 1/100)
-#> Extracting regression quantities : 0.82 sec elapsed
-#> Computing values on the grid : 0.23 sec elapsed
-#> Prior distribution: truncated exponential : 1.05 sec elapsed
+#> Extracting regression quantities : 0.89 sec elapsed
+#> Computing values on the grid : 0.25 sec elapsed
+#> Prior distribution: truncated exponential : 1.12 sec elapsed
 #> Results available now!
 ```
 
@@ -218,9 +218,11 @@ Thus, we have replicated the second row in panel A, Table 1 in Basu
 
 ## References
 
-- Basu, D. (2026). How likely is it that omitted variable bias will
-  overturn your results? *Economics Letters*.
+- Basu, D. (2026). Approximate omitted variable bias-adjusted confidence
+  intervals *Economics Letters*. [DOI:
+  10.1016/j.econlet.2026.113248](https://doi.org)
 
 - Cinelli, C. and Hazlett, C. (2020). Making Sense of Sensitivity:
   Extending Omitted Variable Bias. *Journal of the Royal Statistical
-  Society Series B: Statistical Methodology,* 82(1):39–67
+  Society Series B: Statistical Methodology,* 82(1):39–67. [DOI:
+  10.1111/rssb.12348](https://doi.org)

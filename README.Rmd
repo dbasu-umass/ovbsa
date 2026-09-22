@@ -130,6 +130,6 @@ Thus, we have replicated the second row in panel A, Table 1 in Basu (2026).
 
 ## References
 
-- Basu, D. (2026). How likely is it that omitted variable bias will overturn your results? *Economics Letters*. 
+- Basu, D. (2026). Approximate omitted variable bias-adjusted confidence intervals *Economics Letters*. [DOI: 10.1016/j.econlet.2026.113248](https://doi.org)
 
-- Cinelli, C. and Hazlett, C. (2020). Making Sense of Sensitivity: Extending Omitted Variable Bias. *Journal of the Royal Statistical Society Series B: Statistical Methodology,* 82(1):39–67
+- Cinelli, C. and Hazlett, C. (2020). Making Sense of Sensitivity: Extending Omitted Variable Bias. *Journal of the Royal Statistical Society Series B: Statistical Methodology,* 82(1):39–67. [DOI: 10.1111/rssb.12348](https://doi.org)
