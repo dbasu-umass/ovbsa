@@ -1,5 +1,7 @@
 #' bias and std error for (kd,ky) using total R2-based analysis
 #'
+#'`tr2bias()` is deprecated; please use [baci()] instead.
+#'
 #' @param kd sensitivity parameter kD (scalar)
 #' @param ky sensitivity parameter kY (scalar)
 #' @param alpha significance level for hypothesis test (e.g. 0.05)
@@ -18,6 +20,8 @@
 #' \item{ciubn}{Adj upper boundary of conf int when unadj estimate<0}
 #' @export
 #'
+#'@keywords internal
+#'
 #' @examples
 #'
 #' require("sensemakr")
@@ -32,6 +36,8 @@
 tr2bias <- function(
     kd,ky,alpha,data,outcome,
     treatment,bnch_reg,other_reg=NULL){
+
+  .Deprecated("baci", msg = "'tr2bias' is deprecated. Please use 'baci()' instead.")
 
   # ------ Create data set
   d1 <- as.data.frame(data)

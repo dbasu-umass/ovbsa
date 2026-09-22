@@ -1,5 +1,7 @@
 #' compute max(kD) and max(kY) for total R2-based analysis
 #'
+#'`kdkyrngtr2()` is deprecated; please use [baci()] instead.
+#'
 #' @param data data frame for analysis
 #' @param outcome name of outcome variable
 #' @param treatment name of treatment variable
@@ -10,6 +12,8 @@
 #' \item{kd_high}{max(kD), a scalar}
 #' \item{ky_high}{max(kY), a scalar}
 #' @export
+#'
+#'@keywords internal
 #'
 #' @examples
 #' require("sensemakr")
@@ -24,6 +28,8 @@
 kdkyrngtr2 <- function(
     data,outcome,treatment,bnch_reg,other_reg=NULL
     ){
+
+  .Deprecated("baci", msg = "'kdkyrngtr2' is deprecated. Please use 'baci()' instead.")
 
   # ------ Create data set
   d1 <- as.data.frame(data)

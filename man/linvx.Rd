@@ -17,7 +17,7 @@ linvx(x, xvec, k)
 the value (scalar) of the pdf at x
 }
 \description{
-quasi-triangular probability distribution function
+\code{linvx()} is deprecated; please use \code{\link[=baci]{baci()}} instead.
 }
 \examples{
 xfull <- runif(n=100,min=0,max=10)
@@ -26,3 +26,4 @@ xmod <- 2
 res_pdf <- linvx(x=xpoint,xvec=xfull,k=xmod)
 
 }
+\keyword{internal}

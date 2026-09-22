@@ -52,7 +52,7 @@ list with the following elements:
 \item{frac_prob_rest_wt}{prob of conclusion being overturned (wt, rest)}
 }
 \description{
-probability of conclusion being overturned using partial R2-based analysis without conditioning on treatment
+\code{salpr2ncd()} is deprecated; please use \code{\link[=baci]{baci()}} instead.
 }
 \examples{
 
@@ -67,3 +67,4 @@ darfur1 <- dplyr::slice_sample(darfur, prop=0.25)
 res4 <- salpr2ncd(alpha=0.05,data=darfur1,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth,N=500)
 
 }
+\keyword{internal}

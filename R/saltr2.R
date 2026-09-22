@@ -1,5 +1,7 @@
 #' probability of conclusion being overturned using total R2-based analysis
 #'
+#'`saltr2()` is deprecated; please use [baci()] instead.
+#'
 #' @param alpha significance level for hypothesis test (e.g. 0.05)
 #' @param data data frame for analysis
 #' @param outcome name of outcome variable
@@ -24,6 +26,7 @@
 #' \item{frac_prob_rest}{prob of conclusion being overturned (unwt, rest)}
 #' \item{frac_prob_rest_wt}{prob of conclusion being overturned (wt, rest)}
 #' @export
+#' @keywords internal
 #'
 #' @examples
 #'
@@ -42,7 +45,7 @@ saltr2 <- function(
     bnch_reg,other_reg,N,maxkd=NULL,
     maxky=NULL,k_kd=1,k_ky=1){
 
-  lifecycle::deprecate_warn("2.1.0", "old_function()", details = "Use baci() instead.")
+  .Deprecated("baci", msg = "'saltr2' is deprecated. Please use 'baci()' instead.")
 
   # --- Compute ranges for kd,ky
   r1 <- ovbsa::kdkyrngtr2(

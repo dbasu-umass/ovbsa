@@ -33,7 +33,7 @@ a list with the following elements:
 \item{ciubn}{Adj upper boundary of conf int when unadj estimate<0}
 }
 \description{
-bias and std error for (kd,ky) using partial R2-based analysis without conditioning on treatment
+\code{pr2ncdbias()} is deprecated; please use \code{\link[=baci]{baci()}} instead.
 }
 \examples{
 require("sensemakr")
@@ -46,3 +46,4 @@ X_oth <- c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur"
 res4<-pr2ncdbias(kd=1,ky=1,alpha=0.05,data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth)
 
 }
+\keyword{internal}

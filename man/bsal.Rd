@@ -35,7 +35,7 @@ a matrix with following rows for case 1, 2 and 3 (in columns):
 \item{adjusted_upper_CI}{bias-adjusted confidence interval upper boundary}
 }
 \description{
-basic sensitivity analysis of omitted variable bias
+\code{bsal()} is deprecated; please use \code{\link[=baci]{baci()}} instead.
 }
 \examples{
 
@@ -49,3 +49,4 @@ X_oth <- c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur"
 res1 <- bsal(kd=1,ky=1,alpha=0.05,data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth)
 
 }
+\keyword{internal}

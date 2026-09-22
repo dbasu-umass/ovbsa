@@ -23,7 +23,7 @@ a data frame with 2 columns and 1 row:
 \item{ky_high}{max(kY), a scalar}
 }
 \description{
-compute max(kD) and max(kY) for total R2-based analysis
+\code{kdkyrngtr2()} is deprecated; please use \code{\link[=baci]{baci()}} instead.
 }
 \examples{
 require("sensemakr")
@@ -36,3 +36,4 @@ X_oth <- c("village","age","farmer_dar","herder_dar","pastvoted","hhsize_darfur"
 r1 <- kdkyrngtr2(data=darfur,outcome=Y,treatment=D,bnch_reg=X,other_reg=X_oth)
 
 }
+\keyword{internal}

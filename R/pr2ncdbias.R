@@ -1,5 +1,7 @@
 #' bias and std error for (kd,ky) using partial R2-based analysis without conditioning on treatment
 #'
+#'`pr2ncdbias()` is deprecated; please use [baci()] instead.
+#'
 #' @param kd sensitivity parameter kD (scalar)
 #' @param ky sensitivity parameter kY (scalar)
 #' @param alpha significance level for hypothesis test (e.g. 0.05)
@@ -18,6 +20,8 @@
 #' \item{ciubn}{Adj upper boundary of conf int when unadj estimate<0}
 #' @export
 #'
+#'@keywords internal
+#'
 #' @examples
 #' require("sensemakr")
 #' Y <- "peacefactor"
@@ -31,6 +35,8 @@
 pr2ncdbias <- function(
     kd,ky,alpha,data,outcome,treatment,
     bnch_reg,other_reg=NULL){
+
+  .Deprecated("baci", msg = "'pr2ncdbias' is deprecated. Please use 'baci()' instead.")
 
   # ------ Create data set
   d1 <- as.data.frame(data)
