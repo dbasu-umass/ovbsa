@@ -1,5 +1,7 @@
 #' basic sensitivity analysis of omitted variable bias
 #'
+#'`bsal()` is deprecated; please use [baci()] instead.
+#'
 #' @param kd sensitivity parameter kD (scalar)
 #' @param ky sensitivity parameter kY (scalar)
 #' @param alpha significance level for hypothesis test (e.g. 0.05)
@@ -21,6 +23,8 @@
 #'
 #' @export
 #'
+#'@keywords internal
+#'
 #' @examples
 #'
 #' require("sensemakr")
@@ -36,7 +40,7 @@ bsal <- function(kd,ky,alpha,
                    data,outcome,treatment,
                    bnch_reg, other_reg){
 
-  lifecycle::deprecate_warn("2.1.0", "old_function()", details = "Use baci() instead.")
+  .Deprecated("baci", msg = "'bsal' is deprecated. Please use 'baci()' instead.")
 
   # ------ Create data set
   d1 <- as.data.frame(data)

@@ -1,5 +1,5 @@
 ## R CMD check results
+There were no ERRORs, WARNINGs, or NOTEs.
 
-0 errors | 0 warnings | 0 notes
+* Note: urlchecker flags the doi.org link with a 403 Forbidden error due to server-side bot blocking, but the URL resolves perfectly in a standard browser.
 
-* This is a new release.
